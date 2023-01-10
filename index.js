@@ -41,7 +41,9 @@ app.set('views', './views');
     const products = await productsDao.getAll();
 
     if (products.length === 0) {
-      await productsDao.save(initialProducts);
+      initialProducts.forEach(async (product) => {
+        await productsDao.save(product);
+      });
     }
   } catch (error) {
     logger.error(error);
@@ -64,7 +66,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: envConfig.mongodb.uri,
+      mongoUrl: dbConfig.mongodb.uri,
       dbName: 'sessions',
       ttl: 60,
     }),
