@@ -2,7 +2,7 @@
 const minimist = require('minimist');
 const args = minimist(process.argv.slice(2), {
   default: {
-    port: 8080,
+    port: process.env.PORT || 8080,
     mode: 'FORK',
   },
   alias: {
