@@ -19,13 +19,18 @@ const args = require('./utils/minimist');
 const clusterMode = require('./utils/clusterMode');
 const logger = require('./middlewares/logger');
 
-const { createMessagesTable, createProductsTable } = require('./db/utils/createTables');
+const productsDao = require('./models/daos/Products.dao');
+const messagesDao = require('./models/daos/Messages.dao');
+
+// const { createMessagesTable, createProductsTable } = require('./db/utils/createTables');
 
 const app = express();
 const httpServer = new HttpServer(app);
 const io = new SocketServer(httpServer);
-const productsDB = new SQLClient(dbConfig.sqlite, 'products');
-const messagesDB = new SQLClient(dbConfig.sqlite, 'messages');
+
+// // KNEX
+// const productsDB = new SQLClient(dbConfig.sqlite, 'products');
+// const messagesDB = new SQLClient(dbConfig.sqlite, 'messages');
 
 app.engine('.hbs', engine({ extname: 'hbs' }));
 app.set('view engine', '.hbs');
@@ -34,14 +39,22 @@ app.set('views', './views');
 // KNEX
 (async () => {
   try {
-    await createProductsTable(dbConfig.sqlite);
-    await createMessagesTable(dbConfig.sqlite);
-    const products = await productsDB.getAll();
+    // await createProductsTable(dbConfig.sqlite);
+    // await createMessagesTable(dbConfig.sqlite);
+    // const products = await productsDB.getAll();
+
+    const products = await productsDao.getAll();
+
     if (products.length === 0) {
-      await productsDB.save(initialProducts);
+      // await productsDB.save(initialProducts);
+      await productsDao.save(initialProducts);
+
+      /* initialProducts.forEach(async (product) => { */
+      /*   // console.log(product); */
+      /*   await productsDao.save(product); */
+      /* }); */
     }
   } catch (error) {
-    // console.log(error);
     logger.error(error);
   }
 })();
@@ -76,21 +89,29 @@ io.on('connection', async (socket) => {
   console.log('nuevo cliente conectado');
   console.log(socket.id);
 
-  const messages = await messagesDB.getAll();
+  // const messages = await messagesDB.getAll();
+
+  const messages = messagesDao.getAll();
   socket.emit('messages', messages);
 
-  const products = await productsDB.getAll();
+  // const products = await productsDB.getAll();
+
+  const products = await productsDao.getAll();
   socket.emit('products', products);
 
   socket.on('new-message', async (data) => {
-    await messagesDB.save(data);
-    const updatedMessages = await messagesDB.getAll();
+    // await messagesDB.save(data);
+    // const updatedMessages = await messagesDB.getAll();
+
+    messagesDao.save(data);
+    const updatedMessages = await messagesDao.getAll();
     io.emit('messages', updatedMessages);
   });
 
   socket.on('new-product', async (data) => {
-    await productsDB.save(data);
-    const updatedProducts = await productsDB.getAll();
+    // await productsDB.save(data);
+
+    const updatedProducts = productsDao.save(data);
     io.emit('products', updatedProducts);
   });
 });
