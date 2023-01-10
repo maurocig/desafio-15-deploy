@@ -36,23 +36,12 @@ app.engine('.hbs', engine({ extname: 'hbs' }));
 app.set('view engine', '.hbs');
 app.set('views', './views');
 
-// KNEX
 (async () => {
   try {
-    // await createProductsTable(dbConfig.sqlite);
-    // await createMessagesTable(dbConfig.sqlite);
-    // const products = await productsDB.getAll();
-
     const products = await productsDao.getAll();
 
     if (products.length === 0) {
-      // await productsDB.save(initialProducts);
       await productsDao.save(initialProducts);
-
-      /* initialProducts.forEach(async (product) => { */
-      /*   // console.log(product); */
-      /*   await productsDao.save(product); */
-      /* }); */
     }
   } catch (error) {
     logger.error(error);
@@ -89,9 +78,8 @@ io.on('connection', async (socket) => {
   console.log('nuevo cliente conectado');
   console.log(socket.id);
 
-  // const messages = await messagesDB.getAll();
-
-  const messages = messagesDao.getAll();
+  const messages = await messagesDao.getAll();
+  console.log(messages);
   socket.emit('messages', messages);
 
   // const products = await productsDB.getAll();
@@ -109,9 +97,8 @@ io.on('connection', async (socket) => {
   });
 
   socket.on('new-product', async (data) => {
-    // await productsDB.save(data);
-
-    const updatedProducts = productsDao.save(data);
+    await productsDao.save(data);
+    const updatedProducts = await productsDao.getAll();
     io.emit('products', updatedProducts);
   });
 });
