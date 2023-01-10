@@ -5,7 +5,7 @@ const form = document.querySelector('#container-form');
 const chat = document.querySelector('#container-chat');
 
 // const port = document.querySelector('#input-port').value;
-const PORT = process.env.PORT || 8080;
+const PORT = 8080;
 
 async function render(file, obj, target) {
   const data = await fetch(`http://localhost:${PORT}/${file}`);
