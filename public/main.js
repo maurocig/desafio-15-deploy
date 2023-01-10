@@ -39,7 +39,6 @@ chat.addEventListener('submit', (e) => {
     email: emailInput.value,
     message: messageInput.value,
   };
-  console.log(newMessage);
   socket.emit('new-message', newMessage);
 });
 

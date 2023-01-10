@@ -82,16 +82,11 @@ io.on('connection', async (socket) => {
   console.log(messages);
   socket.emit('messages', messages);
 
-  // const products = await productsDB.getAll();
-
   const products = await productsDao.getAll();
   socket.emit('products', products);
 
   socket.on('new-message', async (data) => {
-    // await messagesDB.save(data);
-    // const updatedMessages = await messagesDB.getAll();
-
-    messagesDao.save(data);
+    await messagesDao.save(data);
     const updatedMessages = await messagesDao.getAll();
     io.emit('messages', updatedMessages);
   });
