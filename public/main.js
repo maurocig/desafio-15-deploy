@@ -8,7 +8,8 @@ const chat = document.querySelector('#container-chat');
 const PORT = 8080;
 
 async function render(file, obj, target) {
-  const data = await fetch(`http://localhost:${PORT}/${file}`);
+  // const data = await fetch(`http://localhost:${PORT}/${file}`);
+  const data = await fetch(`http://desafio-deploy.herokuapp.com/${file}`);
   const parsedData = await data.text();
   template = Handlebars.compile(parsedData);
   const html = await template(obj);
