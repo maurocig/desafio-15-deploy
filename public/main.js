@@ -49,11 +49,3 @@ socket.on('products', async (products) => {
 socket.on('messages', async (messages) => {
   await render('chat.hbs', { messages }, chat);
 });
-
-// fetch('http://localhost:8080/products.hbs')
-// 	.then((data) => data.text())
-// 	.then((template) => {
-// 		const html = Handlebars.compile(template, { products });
-// 		div.innerHtml = html;
-// 	})
-// const template = Handlebars

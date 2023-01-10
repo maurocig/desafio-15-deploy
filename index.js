@@ -9,7 +9,6 @@ const cors = require('cors');
 const compression = require('compression');
 
 const MongoContainer = require('./models/containers/Mongodb.container');
-const SQLClient = require('./db/clients/sql.clients');
 const dbConfig = require('./db/db.config');
 const envConfig = require('./config');
 const initialProducts = require('./db/assets/initialProducts');
